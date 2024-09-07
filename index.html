@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة رئيسية احترافية</title>
+    <style>
+        /* إعدادات عامة */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #e0e5ec;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* الحاوية الرئيسية */
+        .container {
+            text-align: center;
+            background-color: #f0f0f3;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 10px 10px 20px #cbced1, -10px -10px 20px #ffffff;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* الشعار */
+        .logo img {
+            width: 200px;
+            margin-bottom: 50px;
+        }
+
+        /* الزر الذي يودي إلى واتساب */
+        .whatsapp-button {
+            margin-top: 30px;
+        }
+
+        .whatsapp-button a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #25d366;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            font-size: 20px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-button a:hover {
+            background-color: #1e9d54;
+        }
+
+        .whatsapp-logo {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- الشعار في المنتصف -->
+        <div class="logo">
+            <img src="https://i.imgur.com/aiBqoNs.png" alt="Logo">
+        </div>
+
+        <!-- الزر مع صورة واتساب -->
+        <div class="whatsapp-button">
+            <a href="https://wa.me/9647711272744" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp Logo" class="whatsapp-logo">
+                <span>تواصل عبر واتساب</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
