@@ -221,6 +221,30 @@
             margin: 0;
         }
 
+        .exit-fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .fullscreen-active .exit-fullscreen-btn {
+            opacity: 1;
+        }
+
         .toast {
             position: fixed;
             bottom: 20px;
@@ -273,6 +297,9 @@
                 <div class="panel-header">
                     <span class="panel-title"><i class="fas fa-code"></i> محرر HTML</span>
                     <div class="panel-actions">
+                        <button class="panel-btn" title="لصق" onclick="pasteCode()">
+                            <i class="fas fa-paste"></i>
+                        </button>
                         <button class="panel-btn" title="تكبير النص" onclick="zoomIn()">
                             <i class="fas fa-search-plus"></i>
                         </button>
@@ -360,6 +387,10 @@
         </div>
     </div>
 
+    <button class="exit-fullscreen-btn" onclick="exitFullscreen()" id="exit-fullscreen-btn">
+        <i class="fas fa-times"></i>
+    </button>
+
     <div class="toast" id="toast"></div>
 
     <script>
@@ -373,10 +404,12 @@
         const previewEl = document.getElementById('preview');
         const editorPanel = document.getElementById('editor-panel');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
         const panelToggleBtn = document.getElementById('panel-toggle-btn');
         const lineCountEl = document.getElementById('line-count');
         const fontSizeEl = document.getElementById('font-size');
         const toastEl = document.getElementById('toast');
+        const bodyEl = document.body;
         
         // تهيئة المحرر
         function initEditor() {
@@ -465,13 +498,22 @@
             
             if (isFullscreen) {
                 previewPanel.classList.add('fullscreen');
+                bodyEl.classList.add('fullscreen-active');
                 fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> خروج من ملء الشاشة';
                 fullscreenBtn.style.background = 'var(--accent-color)';
                 showToast('وضع ملء الشاشة مفعل', 'info');
             } else {
                 previewPanel.classList.remove('fullscreen');
+                bodyEl.classList.remove('fullscreen-active');
                 fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> ملء الشاشة';
                 fullscreenBtn.style.background = 'var(--primary-color)';
+            }
+        }
+        
+        // خروج من ملء الشاشة
+        function exitFullscreen() {
+            if (isFullscreen) {
+                toggleFullscreen();
             }
         }
         
@@ -487,6 +529,19 @@
                 showToast('تم فتح الكود في نافذة جديدة', 'success');
             } catch (error) {
                 showToast('حدث خطأ في فتح النافذة الجديدة', 'error');
+            }
+        }
+        
+        // لصق الكود
+        async function pasteCode() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    insertAtCursor(text);
+                    showToast('تم لصق الكود', 'success');
+                }
+            } catch (error) {
+                showToast('تعذر الوصول إلى الحافظة', 'error');
             }
         }
         
