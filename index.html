@@ -1,88 +1,599 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> الواتساب</title>
+    <title>معاينة HTML المتقدمة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* إعدادات عامة */
+        :root {
+            --primary-color: rgba(41, 128, 185, 0.85);
+            --secondary-color: rgba(52, 152, 219, 0.7);
+            --glass-effect: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #e0e5ec;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        /* الحاوية الرئيسية */
-        .container {
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #333;
+        }
+        
+        .glass-panel {
+            background: var(--glass-effect);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            padding: 20px;
+            margin: 15px;
+        }
+        
+        .header {
             text-align: center;
-            background-color: #f0f0f3;
-            padding: 50px;
-            border-radius: 20px;
-            box-shadow: 10px 10px 20px #cbced1, -10px -10px 20px #ffffff;
-            width: 100%;
-            max-width: 600px;
+            padding: 20px 0;
         }
-
-        /* الشعار */
-        .logo img {
-            width: 200px;
-            margin-bottom: 50px;
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        /* الزر الذي يودي إلى واتساب */
-        .whatsapp-button {
-            margin-top: 30px;
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-
-        .whatsapp-button a {
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            justify-content: center;
-            background-color: #25d366;
-            padding: 15px 30px;
-            border-radius: 50px;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
-            text-decoration: none;
-            font-size: 20px;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn i {
+            font-size: 1rem;
+        }
+        
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+        }
+        
+        .editor-row {
+            display: flex;
+            flex: 1;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .editor-section, .preview-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: var(--primary-color);
             color: white;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            border-radius: 10px 10px 0 0;
+            margin-bottom: -1px;
         }
-
-        .whatsapp-button a:hover {
-            background-color: #1e9d54;
+        
+        .section-title {
+            font-weight: 600;
         }
-
-        .whatsapp-logo {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
+        
+        .section-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        textarea.code-editor {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 10px 10px;
+            resize: none;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: rgba(255,255,255,0.8);
+            direction: ltr;
+        }
+        
+        .preview-container {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+            background: white;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .media-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .media-btn {
+            padding: 8px 15px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid #ddd;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .media-btn:hover {
+            background: rgba(255,255,255,0.9);
+        }
+        
+        .media-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            margin: 0;
+            border-radius: 0;
+            background: white;
+        }
+        
+        .fullscreen-iframe {
+            height: 100vh;
+        }
+        
+        @media (max-width: 768px) {
+            .editor-row {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .editor-section, .preview-section {
+                height: 50vh;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- الشعار في المنتصف -->
-        <div class="logo">
-            <img src="https://i.imgur.com/aiBqoNs.png" alt="Logo">
+    <div class="glass-panel">
+        <div class="header">
+            <h1><i class="fas fa-code"></i> معاينة HTML المتقدمة</h1>
         </div>
-
-        <!-- الزر مع صورة واتساب -->
-        <div class="whatsapp-button">
-            <a href="https://wa.me/9647711272744" target="_blank">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp Logo" class="whatsapp-logo">
-                <span>تواصل عبر واتساب</span>
-            </a>
+        
+        <div class="controls">
+            <button class="btn" onclick="runCode()">
+                <i class="fas fa-play"></i> تشغيل
+            </button>
+            <button class="btn" onclick="clearCode()">
+                <i class="fas fa-trash"></i> مسح
+            </button>
+            <button class="btn" onclick="toggleFullscreen()">
+                <i class="fas fa-expand"></i> ملء الشاشة
+            </button>
+            <button class="btn" onclick="openInNewTab()">
+                <i class="fas fa-external-link-alt"></i> نافذة جديدة
+            </button>
+            <button class="btn" onclick="toggleEditor()">
+                <i class="fas fa-eye"></i> إخفاء المحرر
+            </button>
+        </div>
+        
+        <div class="editor-container">
+            <div class="editor-row">
+                <div class="editor-section glass-panel" id="editor-section">
+                    <div class="section-header">
+                        <span class="section-title"><i class="fas fa-edit"></i> محرر HTML</span>
+                        <div class="section-actions">
+                            <button class="action-btn" title="تكبير" onclick="zoomEditor('in')">
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+                            <button class="action-btn" title="تصغير" onclick="zoomEditor('out')">
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="html-code" class="code-editor" placeholder="أدخل كود HTML هنا..."><!DOCTYPE html>
+<html>
+<head>
+    <title>صفحة تجريبية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <h1>مرحباً بك في معاينة HTML المتقدمة</h1>
+    <p>هذه صفحة تجريبية يمكنك تعديلها كما تريد</p>
+    <button class="btn" onclick="alert('أهلاً وسهلاً!')">انقر هنا</button>
+    
+    <div id="media-container" style="margin-top: 30px;">
+        <!-- سيتم عرض الكاميرا والميكروفون هنا -->
+    </div>
+</body>
+</html></textarea>
+                </div>
+                
+                <div class="preview-section glass-panel">
+                    <div class="section-header">
+                        <span class="section-title"><i class="fas fa-eye"></i> معاينة</span>
+                        <div class="section-actions">
+                            <button class="action-btn" title="تحديث" onclick="runCode()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="preview-container">
+                        <iframe id="preview-frame"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="media-controls">
+            <button class="media-btn" onclick="toggleCamera()">
+                <i class="fas fa-camera"></i> الكاميرا
+            </button>
+            <button class="media-btn" onclick="toggleMicrophone()">
+                <i class="fas fa-microphone"></i> الميكروفون
+            </button>
         </div>
     </div>
+
+    <script>
+        // متغيرات لحالة الكاميرا والميكروفون
+        let cameraActive = false;
+        let microphoneActive = false;
+        let stream = null;
+        let editorVisible = true;
+        
+        // تشغيل الكود وعرضه في الإطار
+        function runCode() {
+            const htmlCode = document.getElementById('html-code').value;
+            const previewFrame = document.getElementById('preview-frame');
+            const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            
+            previewDocument.open();
+            previewDocument.write(htmlCode);
+            previewDocument.close();
+            
+            // إذا كانت الكاميرا نشطة، أعد تشغيلها
+            if (cameraActive) {
+                setTimeout(() => {
+                    startCamera(previewDocument.getElementById('media-container'));
+                }, 500);
+            }
+            
+            // إذا كان الميكروفون نشطاً، أعد تشغيله
+            if (microphoneActive) {
+                setTimeout(() => {
+                    startMicrophone(previewDocument.getElementById('media-container'));
+                }, 500);
+            }
+        }
+        
+        // مسح المحرر
+        function clearCode() {
+            document.getElementById('html-code').value = '';
+            const previewFrame = document.getElementById('preview-frame');
+            const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            
+            previewDocument.open();
+            previewDocument.write('');
+            previewDocument.close();
+            
+            // إيقاف الكاميرا والميكروفون عند المسح
+            stopMedia();
+        }
+        
+        // تبديل عرض المحرر
+        function toggleEditor() {
+            const editorSection = document.getElementById('editor-section');
+            editorVisible = !editorVisible;
+            editorSection.classList.toggle('hidden');
+            
+            const btn = document.querySelector('.btn:nth-of-type(5)');
+            if (editorVisible) {
+                btn.innerHTML = '<i class="fas fa-eye"></i> إخفاء المحرر';
+            } else {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i> إظهار المحرر';
+            }
+        }
+        
+        // عرض المعاينة في نافذة جديدة
+        function openInNewTab() {
+            const htmlCode = document.getElementById('html-code').value;
+            const newWindow = window.open('', '_blank');
+            newWindow.document.open();
+            newWindow.document.write(htmlCode);
+            newWindow.document.close();
+        }
+        
+        // عرض المعاينة في وضع ملء الشاشة
+        function toggleFullscreen() {
+            const previewContainer = document.querySelector('.preview-container');
+            previewContainer.classList.toggle('fullscreen');
+            
+            if (previewContainer.classList.contains('fullscreen')) {
+                document.querySelector('.btn:nth-of-type(3)').innerHTML = '<i class="fas fa-compress"></i> تصغير';
+            } else {
+                document.querySelector('.btn:nth-of-type(3)').innerHTML = '<i class="fas fa-expand"></i> ملء الشاشة';
+            }
+        }
+        
+        // تكبير/تصغير المحرر
+        function zoomEditor(type) {
+            const editor = document.getElementById('html-code');
+            const currentSize = parseInt(window.getComputedStyle(editor).fontSize);
+            
+            if (type === 'in' && currentSize < 24) {
+                editor.style.fontSize = (currentSize + 2) + 'px';
+            } else if (type === 'out' && currentSize > 12) {
+                editor.style.fontSize = (currentSize - 2) + 'px';
+            }
+        }
+        
+        // تشغيل/إيقاف الكاميرا
+        async function toggleCamera() {
+            const btn = document.querySelector('.media-btn:nth-of-type(1)');
+            const previewFrame = document.getElementById('preview-frame');
+            const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            const mediaContainer = previewDocument.getElementById('media-container');
+            
+            if (!cameraActive) {
+                try {
+                    await startCamera(mediaContainer);
+                    btn.classList.add('active');
+                    cameraActive = true;
+                } catch (error) {
+                    console.error('Error accessing camera:', error);
+                    alert('تعذر الوصول إلى الكاميرا: ' + error.message);
+                }
+            } else {
+                stopCamera();
+                btn.classList.remove('active');
+                cameraActive = false;
+            }
+        }
+        
+        // تشغيل الكاميرا
+        async function startCamera(container) {
+            if (!container) return;
+            
+            stopMedia(); // إيقاف أي وسائط نشطة
+            
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.autoplay = true;
+                video.style.width = '100%';
+                video.style.borderRadius = '8px';
+                video.style.marginTop = '20px';
+                
+                container.innerHTML = '<h3>الكاميرا النشطة:</h3>';
+                container.appendChild(video);
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        // تشغيل/إيقاف الميكروفون
+        async function toggleMicrophone() {
+            const btn = document.querySelector('.media-btn:nth-of-type(2)');
+            const previewFrame = document.getElementById('preview-frame');
+            const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            const mediaContainer = previewDocument.getElementById('media-container');
+            
+            if (!microphoneActive) {
+                try {
+                    await startMicrophone(mediaContainer);
+                    btn.classList.add('active');
+                    microphoneActive = true;
+                } catch (error) {
+                    console.error('Error accessing microphone:', error);
+                    alert('تعذر الوصول إلى الميكروفون: ' + error.message);
+                }
+            } else {
+                stopMicrophone();
+                btn.classList.remove('active');
+                microphoneActive = false;
+            }
+        }
+        
+        // تشغيل الميكروفون
+        async function startMicrophone(container) {
+            if (!container) return;
+            
+            stopMedia(); // إيقاف أي وسائط نشطة
+            
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioContext.createAnalyser();
+                const microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 100;
+                canvas.style.width = '100%';
+                canvas.style.backgroundColor = '#f0f0f0';
+                canvas.style.borderRadius = '8px';
+                canvas.style.marginTop = '20px';
+                
+                const canvasCtx = canvas.getContext('2d');
+                
+                container.innerHTML = '<h3>الميكروفون النشط:</h3>';
+                container.appendChild(canvas);
+                
+                function visualize() {
+                    if (!microphoneActive) return;
+                    
+                    requestAnimationFrame(visualize);
+                    
+                    const bufferLength = analyser.frequencyBinCount;
+                    const dataArray = new Uint8Array(bufferLength);
+                    analyser.getByteTimeDomainData(dataArray);
+                    
+                    canvasCtx.fillStyle = '#f0f0f0';
+                    canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    canvasCtx.lineWidth = 2;
+                    canvasCtx.strokeStyle = '#3498db';
+                    canvasCtx.beginPath();
+                    
+                    const sliceWidth = canvas.width * 1.0 / bufferLength;
+                    let x = 0;
+                    
+                    for (let i = 0; i < bufferLength; i++) {
+                        const v = dataArray[i] / 128.0;
+                        const y = v * canvas.height / 2;
+                        
+                        if (i === 0) {
+                            canvasCtx.moveTo(x, y);
+                        } else {
+                            canvasCtx.lineTo(x, y);
+                        }
+                        
+                        x += sliceWidth;
+                    }
+                    
+                    canvasCtx.lineTo(canvas.width, canvas.height / 2);
+                    canvasCtx.stroke();
+                }
+                
+                visualize();
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        // إيقاف الكاميرا
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.kind === 'video' && track.stop());
+            }
+        }
+        
+        // إيقاف الميكروفون
+        function stopMicrophone() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.kind === 'audio' && track.stop());
+            }
+        }
+        
+        // إيقاف جميع الوسائط
+        function stopMedia() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            cameraActive = false;
+            microphoneActive = false;
+            
+            document.querySelectorAll('.media-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+        
+        // تشغيل الكود تلقائياً عند تحميل الصفحة
+        window.onload = runCode;
+        
+        // إيقاف الوسائط عند إغلاق الصفحة
+        window.addEventListener('beforeunload', stopMedia);
+    </script>
 </body>
 </html>
